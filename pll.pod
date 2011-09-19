@@ -1,0 +1,90 @@
+=head1 NAME
+
+pll - Create local::lib environment for Perl
+
+=head1 SYNOPSIS
+
+pll [--notest] /path/to/environment
+
+=head1 DESCRIPTION
+
+Pll is yet another virtualenv (L<http://pypi.python.org/pypi/virtualenv>)
+alike tool for Perl.  It is used to create isolated Perl environments
+with the help of the local::lib module
+(L<http://search.cpan.org/dist/local-lib/lib/local/lib.pm>).
+
+Its features are:
+
+=over 4
+
+=item *
+
+It is a plain Bourne shell script.
+
+=item *
+
+The created Perl environment contains the local::lib module and
+App::cpanminus' cpanm(1) script
+(L<http://search.cpan.org/dist/App-cpanminus/bin/cpanm>).
+
+=item *
+
+In each Perl environment created, it installs wrapper scripts
+F<bin/perl>, F<bin/perldoc>, F<bin/cpanm> so that the commands they
+wrap use the isolated Perl environment via local::lib.
+
+=item *
+
+To ease the use of each Perl environment created, it installs the
+F<bin/activate.sh> Bourne shell script. This script can be sourced
+to set the required environment variables.  Similarly, in each Perl
+environment created, the installed F<bin/deactivate.sh> Bourne sell
+script can be sourced to restore the environment variables set by
+the former script. Also  the installed F<bin/pllenv> script outputs
+how the required environment variables are set. See local::lib
+documentation for details.
+
+=back
+
+=head1 USAGE EXAMPLES
+
+=over 4
+
+=item * To create a new Perl environment in /tmp/p
+
+$ ./pll /tmp/p
+
+=item * To install Catalyst::Devel in the /tmp/p environment just created
+
+$ /tmp/p/bin/cpanm Catalyst::Devel
+
+=item * To run installed catalyst.pl script just installed
+
+$ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
+
+=item * To setup the current shell session to use the environment created earlier
+
+$ . /tmp/p/bin/activate.sh
+$ catalyst.pl
+...
+$ type perl
+perl is /tmp/p/bin/perl
+$
+
+=item * To create a new Perl environment in /tmp/p2 with a specific Perl
+
+$ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+
+=back
+
+=head1 SEE ALSO
+
+L<https://github.com/markpasc/localenv>,
+L<http://terrarum.net/development/perl-virtual-environments.html>, local::lib,
+App::cpanminus
+
+=head1 AUTHOR
+
+Stoned Elipot
+
+=cut

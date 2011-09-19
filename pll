@@ -1,0 +1,138 @@
+#!/bin/sh
+# Create local::lib environment for Perl
+# - Stoned Elipot
+
+# Default Perl
+: ${PERL:=/usr/bin/perl}
+
+# Setup $PLLDIR
+_setup() {
+  set -e
+
+  # make sure we have a full pathname on perl
+  case "$PERL" in
+  /*) : ;;
+  *) echo 1>&2 "$0: PERL environment variable must hold an absolute PATH"; exit 1 ;;
+  esac
+
+  # set PLLDIR
+  if [ -n "$1" ]; then
+    # from command-line
+    PLLDIR="$1"
+  else
+    # default value
+    PLLDIR="$($PERL -e 'printf "$ENV{HOME}/perl5/local-%vd", $^V')"
+  fi
+
+  # setup PLLDIR hier
+  mkdir -p $PLLDIR/bin
+  cd $PLLDIR/bin
+
+  # download cpanm as _cpanm
+    # assumes wget is available if curl is not
+    if curl --version >/dev/null 2>&1; then
+    curl --insecure -L -o _cpanm http://cpanmin.us
+  else
+    wget --no-check-certificate -O _cpanm http://cpanmin.us
+  fi
+  chmod +x _cpanm
+  $PERL -pi -e "s,^\#!.*,\#!$PERL, if $. == 1" _cpanm
+
+  # install local::lib and its needed dependencies
+  # if $PERL already has an uptodate local::lib we need
+  # to specify --reinstall to cpanm so it is really
+  # installed in $PLLDIR
+  ./_cpanm -l "$PLLDIR" --reinstall $_SETUP_NOTEST local::lib 
+
+  # create perl wrapper
+  cat > "$PLLDIR/bin/perl" <<-EOS
+	#!/bin/sh
+	exec \${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR" "\$@"
+	EOS
+  chmod 755 "$PLLDIR/bin/perl"
+
+  # create cpanm wrapper
+  cat > "$PLLDIR/bin/cpanm" <<-EOS
+	#!/bin/sh
+	exec "$PLLDIR"/bin/_cpanm -l "$PLLDIR" "\$@"
+	EOS
+  chmod 755 "$PLLDIR/bin/cpanm"
+
+  # create activate shell script
+  cat > "$PLLDIR"/bin/activate.sh <<-EOS
+	if [ -z "\$PLL_OLD_PERL_LOCAL_LIB_ROOT" ]; then
+	  PLL_OLD_PERL_LOCAL_LIB_ROOT="\$PERL_LOCAL_LIB_ROOT"
+	  PLL_OLD_PERL_MB_OPT="\$PERL_MB_OPT"
+	  PLL_OLD_PERL_MM_OPT="\$PERL_MM_OPT"
+	  PLL_OLD_PERL5LIB="\$PERL5LIB"
+	  PLL_OLD_PATH="\$PATH"
+	fi
+	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR")
+	EOS
+
+  # create deactivate shell script
+  cat > "$PLLDIR"/bin/deactivate.sh <<-EOS
+	if [ -n "\$PLL_OLD_PERL_LOCAL_LIB_ROOT" ]; then
+	  PERL_LOCAL_LIB_ROOT="\$PLL_OLD_PERL_LOCAL_LIB_ROOT"
+	else
+	  unset PERL_LOCAL_LIB_ROOT
+	fi
+	if [ -n "\$PLL_OLD_PERL_MB_OPT" ]; then
+	  PERL_MB_OPT="\$PLL_OLD_PERL_MB_OPT"
+	else
+	  unset PERL_MB_OPT
+	fi
+	if [ -n "\$PLL_OLD_PERL_MM_OPT" ]; then
+	  PERL_MM_OPT="\$PLL_OLD_PERL_MM_OPT"
+	else
+	  unset PERL_MM_OPT
+	fi
+	if [ -n "\$PLL_OLD_PERL5LIB" ]; then
+	  PERL5LIB="\$PLL_OLD_PERL5LIB"
+	else
+	  unset PERL5LIB
+	fi
+	if [ -n "\$PLL_OLD_PATH" ]; then
+	  PATH="\$PLL_OLD_PATH"
+	else
+	  unset PATH
+	fi
+	EOS
+
+  # create pllenv shell script
+  cat > "$PLLDIR"/bin/pllenv <<-EOS
+	#!/bin/sh
+	\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR"
+	EOS
+  chmod 755 "$PLLDIR"/bin/pllenv
+
+  # create perldoc shell script
+  cat > "$PLLDIR"/bin/perldoc <<-EOS
+	#!/bin/sh
+	eval \$($PERL -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR")
+	# if PERLDOC is not set assume perldoc is alongside PERL
+	# if not default to /usr/bin/perldoc
+	: \${PERLDOC:=${PERL}doc}
+	test -x "\$PERLDOC" || PERLDOC=/usr/bin/perldoc
+	exec \${PERLDOC} "\$@"
+	EOS
+  chmod 755 "$PLLDIR"/bin/perldoc
+}
+
+# Main
+case "$1" in
+  # Setup local lib environment for $PERL without running Perl module tests
+  --notest|--no-test|-n)
+  shift
+  _SETUP_NOTEST="--notest"
+  _setup "$@"
+  ;;
+
+  # Setup local lib environment for $PERL
+  *)
+  _SETUP_NOTEST=
+  _setup "$@"
+  ;;
+esac
+
+# vim: ft=sh

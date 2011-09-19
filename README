@@ -1,0 +1,64 @@
+NAME
+    pll - Create local::lib environment for Perl
+
+SYNOPSIS
+    pll [--notest] /path/to/environment
+
+DESCRIPTION
+    Pll is yet another virtualenv (<http://pypi.python.org/pypi/virtualenv>)
+    alike tool for Perl. It is used to create isolated Perl environments
+    with the help of the local::lib module
+    (<http://search.cpan.org/dist/local-lib/lib/local/lib.pm>).
+
+    Its features are:
+
+    *   It is a plain Bourne shell script.
+
+    *   The created Perl environment contains the local::lib module and
+        App::cpanminus' cpanm(1) script
+        (<http://search.cpan.org/dist/App-cpanminus/bin/cpanm>).
+
+    *   In each Perl environment created, it installs wrapper scripts
+        bin/perl, bin/perldoc, bin/cpanm so that the commands they wrap use
+        the isolated Perl environment via local::lib.
+
+    *   To ease the use of each Perl environment created, it installs the
+        bin/activate.sh Bourne shell script. This script can be sourced to
+        set the required environment variables. Similarly, in each Perl
+        environment created, the installed bin/deactivate.sh Bourne sell
+        script can be sourced to restore the environment variables set by
+        the former script. Also the installed bin/pllenv script outputs how
+        the required environment variables are set. See local::lib
+        documentation for details.
+
+USAGE EXAMPLES
+    *   To create a new Perl environment in /tmp/p
+
+        $ ./pll /tmp/p
+
+    *   To install Catalyst::Devel in the /tmp/p environment just created
+
+        $ /tmp/p/bin/cpanm Catalyst::Devel
+
+    *   To run installed catalyst.pl script just installed
+
+        $ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
+
+    *   To setup the current shell session to use the environment created
+        earlier
+
+        $ . /tmp/p/bin/activate.sh $ catalyst.pl ... $ type perl perl is
+        /tmp/p/bin/perl $
+
+    *   To create a new Perl environment in /tmp/p2 with a specific Perl
+
+        $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+
+SEE ALSO
+    <https://github.com/markpasc/localenv>,
+    <http://terrarum.net/development/perl-virtual-environments.html>,
+    local::lib, App::cpanminus
+
+AUTHOR
+    Stoned Elipot
+
