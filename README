@@ -34,25 +34,29 @@ DESCRIPTION
 USAGE EXAMPLES
     *   To create a new Perl environment in /tmp/p
 
-        $ ./pll /tmp/p
+          $ ./pll /tmp/p
 
     *   To install Catalyst::Devel in the /tmp/p environment just created
 
-        $ /tmp/p/bin/cpanm Catalyst::Devel
+          $ /tmp/p/bin/cpanm Catalyst::Devel
 
     *   To run installed catalyst.pl script just installed
 
-        $ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
+          $ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
 
     *   To setup the current shell session to use the environment created
         earlier
 
-        $ . /tmp/p/bin/activate.sh $ catalyst.pl ... $ type perl perl is
-        /tmp/p/bin/perl $
+          $ . /tmp/p/bin/activate.sh
+          $ catalyst.pl
+          ...
+          $ type perl
+          perl is /tmp/p/bin/perl
+          $
 
     *   To create a new Perl environment in /tmp/p2 with a specific Perl
 
-        $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+          $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
 
 SEE ALSO
     <https://github.com/markpasc/localenv>,
