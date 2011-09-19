@@ -29,8 +29,8 @@ _setup() {
   cd $PLLDIR/bin
 
   # download cpanm as _cpanm
-    # assumes wget is available if curl is not
-    if curl --version >/dev/null 2>&1; then
+  # assumes wget is available if curl is not
+  if curl --version >/dev/null 2>&1; then
     curl --insecure -L -o _cpanm http://cpanmin.us
   else
     wget --no-check-certificate -O _cpanm http://cpanmin.us
