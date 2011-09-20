@@ -60,43 +60,12 @@ _setup() {
 
   # create activate shell script
   cat > "$PLLDIR"/bin/activate.sh <<-EOS
-	if [ -z "\$PLL_OLD_PERL_LOCAL_LIB_ROOT" ]; then
-	  PLL_OLD_PERL_LOCAL_LIB_ROOT="\$PERL_LOCAL_LIB_ROOT"
-	  PLL_OLD_PERL_MB_OPT="\$PERL_MB_OPT"
-	  PLL_OLD_PERL_MM_OPT="\$PERL_MM_OPT"
-	  PLL_OLD_PERL5LIB="\$PERL5LIB"
-	  PLL_OLD_PATH="\$PATH"
-	fi
 	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR")
 	EOS
 
   # create deactivate shell script
   cat > "$PLLDIR"/bin/deactivate.sh <<-EOS
-	if [ -n "\$PLL_OLD_PERL_LOCAL_LIB_ROOT" ]; then
-	  PERL_LOCAL_LIB_ROOT="\$PLL_OLD_PERL_LOCAL_LIB_ROOT"
-	else
-	  unset PERL_LOCAL_LIB_ROOT
-	fi
-	if [ -n "\$PLL_OLD_PERL_MB_OPT" ]; then
-	  PERL_MB_OPT="\$PLL_OLD_PERL_MB_OPT"
-	else
-	  unset PERL_MB_OPT
-	fi
-	if [ -n "\$PLL_OLD_PERL_MM_OPT" ]; then
-	  PERL_MM_OPT="\$PLL_OLD_PERL_MM_OPT"
-	else
-	  unset PERL_MM_OPT
-	fi
-	if [ -n "\$PLL_OLD_PERL5LIB" ]; then
-	  PERL5LIB="\$PLL_OLD_PERL5LIB"
-	else
-	  unset PERL5LIB
-	fi
-	if [ -n "\$PLL_OLD_PATH" ]; then
-	  PATH="\$PLL_OLD_PATH"
-	else
-	  unset PATH
-	fi
+	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="--deactivate-all,$PLLDIR")
 	EOS
 
   # create pllenv shell script
