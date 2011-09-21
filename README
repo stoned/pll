@@ -10,26 +10,63 @@ DESCRIPTION
     with the help of the local::lib module
     (<http://search.cpan.org/dist/local-lib/lib/local/lib.pm>).
 
-    Its features are:
+  Features
+    It is a plain Bourne shell script.
 
-    *   It is a plain Bourne shell script.
+    The created Perl environment contains the local::lib module and
+    App::cpanminus' cpanm(1) script
+    (<http://search.cpan.org/dist/App-cpanminus/bin/cpanm>).
 
-    *   The created Perl environment contains the local::lib module and
-        App::cpanminus' cpanm(1) script
-        (<http://search.cpan.org/dist/App-cpanminus/bin/cpanm>).
+    In each Perl environment created, it installs wrapper scripts bin/perl,
+    bin/perldoc, bin/cpanm so that the commands they wrap use the isolated
+    Perl environment via local::lib.
 
-    *   In each Perl environment created, it installs wrapper scripts
-        bin/perl, bin/perldoc, bin/cpanm so that the commands they wrap use
-        the isolated Perl environment via local::lib.
+    To ease the use of each Perl environment created, it installs the
+    bin/activate.sh Bourne shell script. This script can be sourced to set
+    the required environment variables. Similarly, the installed
+    bin/deactivate.sh Bourne shell script can be sourced to restore the
+    environment variables set by the former script. See local::lib
+    documentation for details.
 
-    *   To ease the use of each Perl environment created, it installs the
-        bin/activate.sh Bourne shell script. This script can be sourced to
-        set the required environment variables. Similarly, in each Perl
-        environment created, the installed bin/deactivate.sh Bourne sell
-        script can be sourced to restore the environment variables set by
-        the former script. Also the installed bin/pllenv script outputs how
-        the required environment variables are set. See local::lib
-        documentation for details.
+  Creation of an isolated Perl environment
+    To create an isolated Perl environment, simply run a command like
+
+      $ ./pll /path/to/environment
+
+    The pll script needs an absolute pathname on a perl(1) executable. It
+    defaults to /usr/bin/perl and can be specified with the PERL environment
+    variable as follows:
+
+      $ env PERL=/usr/local/bin/perl ./pll /path/to/environment
+
+    If a pathname in which to create the environment is not specified as
+    argument, it defaults to ${HOME}/perl5/local-V, where "V" is the used
+    perl command's version.
+
+    The local::lib module is installed in /path/to/environment/lib/... and
+    scripts in /path/to/environment/bin.
+
+    The local::lib module and its required modules, if any, are installed
+    with the help of the cpanm script. The test of all these modules are run
+    by cpanm during installation and any failure stops the installation. If
+    needed the tests can be ignored by specifying the --notest argument.
+
+  About the bin/perl wrapper
+    In an isolated Perl environment the bin/perl script behavior's differs
+    somewhat from the perl(1) command it wraps.
+
+    Without argument the bin/perl wrapper script outputs useful shell
+    commands to run to setup the isolated Perl environment. See local::lib
+    documentation for details.
+
+    If it is really needed to have the wrapped perl command running program
+    from its standard input one of the following commands can be used, as
+    appropriate:
+
+      $ /path/to/environment/bin/perl /dev/stdin
+
+
+      $ /path/to/environment/bin/perl /dev/tty
 
 USAGE EXAMPLES
     *   To create a new Perl environment in /tmp/p
