@@ -12,7 +12,7 @@ _setup() {
   # make sure we have a full pathname on perl
   case "$PERL" in
   /*) : ;;
-  *) echo 1>&2 "$0: PERL environment variable must hold an absolute PATH"; exit 1 ;;
+  *) echo 1>&2 "$0: PERL environment variable must be an absolute pathname"; exit 1 ;;
   esac
 
   # set PLLDIR
