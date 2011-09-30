@@ -69,31 +69,52 @@ DESCRIPTION
       $ /path/to/environment/bin/perl /dev/tty
 
 USAGE EXAMPLES
-    *   To create a new Perl environment in /tmp/p
+    * To create a new Perl environment in /tmp/p
 
-          $ ./pll /tmp/p
+        $ ./pll /tmp/p
 
-    *   To install Catalyst::Devel in the /tmp/p environment just created
+    * To install Catalyst::Devel in the /tmp/p environment just created
 
-          $ /tmp/p/bin/cpanm Catalyst::Devel
+        $ /tmp/p/bin/cpanm Catalyst::Devel
 
-    *   To run installed catalyst.pl script just installed
+    * To run installed catalyst.pl script just installed
 
-          $ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
+        $ /tmp/p/bin/perl /tmp/p/bin/catalyst.pl
 
-    *   To setup the current shell session to use the environment created
-        earlier
+    * To setup the current shell session to use the environment created
+      earlier
 
-          $ . /tmp/p/bin/activate.sh
-          $ catalyst.pl
-          ...
-          $ type perl
-          perl is /tmp/p/bin/perl
-          $
+        $ . /tmp/p/bin/activate.sh
+        $ catalyst.pl
+        ...
+        $ type perl
+        perl is /tmp/p/bin/perl
+        $
 
-    *   To create a new Perl environment in /tmp/p2 with a specific Perl
+    * To create a new Perl environment in /tmp/p2 with a specific Perl
 
-          $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+        $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+
+INSTALLATION ONE-LINERS
+    Various way to install Perl environments while downloading the pll
+    script from GitHub.
+
+    * Download with curl, install in default location
+
+        $ curl -kL https://raw.github.com/stoned/pll/master/pll | sh
+
+    * Download with curl, install in a specific location
+
+        $ curl -kL https://raw.github.com/stoned/pll/master/pll | sh -- /dev/stdin /tmp/p
+
+    * Download with wget, install in a specific location
+
+        $ wget --no-check-certificate -O - https://raw.github.com/stoned/pll/master/pll | sh -- /dev/stdin /tmp/p
+
+    * Download with curl, install in a specific location with a specific
+      Perl
+
+        $ curl -kL https://raw.github.com/stoned/pll/master/pll | env PERL=/usr/pkg/bin/perl sh -- /dev/stdin /tmp/p
 
 SEE ALSO
     <https://github.com/markpasc/localenv>,
