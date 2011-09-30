@@ -78,7 +78,7 @@ be used, as appropriate:
 
 =head1 USAGE EXAMPLES
 
-=over 4
+=over 2
 
 =item * To create a new Perl environment in /tmp/p
 
@@ -104,6 +104,31 @@ be used, as appropriate:
 =item * To create a new Perl environment in /tmp/p2 with a specific Perl
 
   $ env PERL=/usr/local/bin/perl ./pll /tmp/p2
+
+=back
+
+=head1 INSTALLATION ONE-LINERS
+
+Various way to install Perl environments while downloading the pll
+script from GitHub.
+
+=over 2
+
+=item * Download with curl, install in default location
+
+  $ curl -kL https://raw.github.com/stoned/pll/master/pll | sh
+
+=item * Download with curl, install in a specific location
+
+  $ curl -kL https://raw.github.com/stoned/pll/master/pll | sh -- /dev/stdin /tmp/p
+
+=item * Download with wget, install in a specific location
+
+  $ wget --no-check-certificate -O - https://raw.github.com/stoned/pll/master/pll | sh -- /dev/stdin /tmp/p
+
+=item * Download with curl, install in a specific location with a specific Perl
+
+  $ curl -kL https://raw.github.com/stoned/pll/master/pll | env PERL=/usr/pkg/bin/perl sh -- /dev/stdin /tmp/p
 
 =back
 
