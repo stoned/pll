@@ -79,6 +79,8 @@ _setup() {
 	exec \${PERLDOC} "\$@"
 	EOS
   chmod 755 "$PLLDIR"/bin/perldoc
+
+  echo "Perl environment $PLLDIR initiated."
 }
 
 # Main
