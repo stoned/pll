@@ -65,7 +65,7 @@ _setup() {
 
   # create deactivate shell script
   cat > "$PLLDIR"/bin/deactivate.sh <<-EOS
-	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="--deactivate-all,$PLLDIR")
+	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="--deactivate,$PLLDIR")
 	EOS
 
   # create perldoc shell script
