@@ -24,52 +24,53 @@ _setup() {
     PLLDIR="$($PERL -e 'printf "$ENV{HOME}/perl5/local-%vd", $^V')"
   fi
 
+  bindir="$PLLDIR/bin"
+
   # setup PLLDIR hier
-  mkdir -p $PLLDIR/bin
-  cd $PLLDIR/bin
+  mkdir -p "$bindir"
 
   # download cpanm as _cpanm
   # assumes wget is available if curl is not
   if curl --version >/dev/null 2>&1; then
-    curl --insecure -L -o _cpanm http://cpanmin.us
+    curl --insecure -L -o "$bindir/_cpanm" http://cpanmin.us
   else
-    wget --no-check-certificate -O _cpanm http://cpanmin.us
+    wget --no-check-certificate -O "$bindir/_cpanm" http://cpanmin.us
   fi
-  chmod +x _cpanm
-  $PERL -pi -e "s,^\#!.*,\#!$PERL, if $. == 1" _cpanm
+  chmod +x "$bindir/_cpanm"
+  $PERL -pi -e "s,^\#!.*,\#!$PERL, if $. == 1" "$bindir/_cpanm"
 
   # install local::lib and its needed dependencies
   # if $PERL already has an uptodate local::lib we need
   # to specify --reinstall to cpanm so it is really
   # installed in $PLLDIR
-  ./_cpanm -l "$PLLDIR" --reinstall $_SETUP_NOTEST local::lib 
+  "$bindir/_cpanm" -l "$PLLDIR" --reinstall $_SETUP_NOTEST local::lib 
 
   # create perl wrapper
-  cat > "$PLLDIR/bin/perl" <<-EOS
+  cat > "$bindir/perl" <<-EOS
 	#!/bin/sh
 	exec \${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR" "\$@"
 	EOS
-  chmod 755 "$PLLDIR/bin/perl"
+  chmod 755 "$bindir/perl"
 
   # create cpanm wrapper
-  cat > "$PLLDIR/bin/cpanm" <<-EOS
+  cat > "$bindir/cpanm" <<-EOS
 	#!/bin/sh
 	exec "$PLLDIR"/bin/_cpanm -l "$PLLDIR" "\$@"
 	EOS
-  chmod 755 "$PLLDIR/bin/cpanm"
+  chmod 755 "$bindir/cpanm"
 
   # create activate shell script
-  cat > "$PLLDIR"/bin/activate.sh <<-EOS
+  cat > "$bindir/activate.sh" <<-EOS
 	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR")
 	EOS
 
   # create deactivate shell script
-  cat > "$PLLDIR"/bin/deactivate.sh <<-EOS
+  cat > "$bindir/deactivate.sh" <<-EOS
 	eval \$(\${PERL:=$PERL} -I"$PLLDIR"/lib/perl5 -Mlocal::lib="--deactivate,$PLLDIR")
 	EOS
 
   # create perldoc shell script
-  cat > "$PLLDIR"/bin/perldoc <<-EOS
+  cat > "$bindir/perldoc" <<-EOS
 	#!/bin/sh
 	eval \$($PERL -I"$PLLDIR"/lib/perl5 -Mlocal::lib="$PLLDIR")
 	# if PERLDOC is not set assume perldoc is alongside PERL
@@ -78,7 +79,7 @@ _setup() {
 	test -x "\$PERLDOC" || PERLDOC=/usr/bin/perldoc
 	exec \${PERLDOC} "\$@"
 	EOS
-  chmod 755 "$PLLDIR"/bin/perldoc
+  chmod 755 "$bindir/perldoc"
 
   echo "Perl environment $PLLDIR initiated."
 }
